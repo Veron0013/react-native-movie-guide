@@ -21,21 +21,21 @@ const TabIcon = ({ focused, text, icon }: tabIconProps) => {
   return focused ? (
     <ImageBackground
       source={images.highlight}
-      className="flex flex-row w-full flex-1 min-w-[112px] min-h-14 justify-center items-center rounded-full overflow-hidden"
+      className="flex flex-row w-full flex-1 min-w-[112px] min-h-16 justify-center items-center rounded-full overflow-hidden"
     >
-      <Image source={icon} tintColor={colors.secondary} className="size-5" />
-      <Text className="text-secondary text-base font-semibold ml-2">
+      <Image source={icon} tintColor={colors.secondary} className="size-6" />
+      <Text className="ml-2 text-base font-semibold text-secondary">
         {text}
       </Text>
     </ImageBackground>
   ) : (
-    <View className="size-full justify-center items-center rounded-full">
-      <Image source={icon} tintColor={colors.accentText} className="size-5" />
+    <View className="justify-center items-center rounded-full size-full">
+      <Image source={icon} tintColor={colors.accentText} className="size-6" />
     </View>
   );
 };
 
-const TasbLayout = () => {
+const TabsLayout = () => {
   return (
     <Tabs
       screenOptions={{
@@ -59,7 +59,7 @@ const TasbLayout = () => {
         tabBarItemStyle: {
           justifyContent: 'center',
           alignItems: 'center',
-          paddingVertical: 11,
+          paddingVertical: 12,
         },
       }}
     >
@@ -90,7 +90,7 @@ const TasbLayout = () => {
           headerShown: false,
           tabBarIcon: ({ focused }) => (
             <TabIcon focused={focused} text="Saved" icon={icons.save} />
-          ),
+          ), 
         }}
       />
       <Tabs.Screen
@@ -107,4 +107,4 @@ const TasbLayout = () => {
   );
 };
 
-export default TasbLayout;
+export default TabsLayout;
