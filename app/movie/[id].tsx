@@ -1,23 +1,20 @@
 'use client';
 
+import ActionButton from '@/components/card/ActionButton';
+import DetailsRow from '@/components/card/DetailsRow';
 import { fetchOneMovie } from '@/services/api';
 import useFetch from '@/services/useFetch';
 import { Genre, Movie } from '@/types/movieType';
 import { useLocalSearchParams } from 'expo-router';
 import React from 'react';
-import {
-  Image,
-  Linking,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Image, Linking, ScrollView, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const MovieDetails = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
   const movie_id: Movie['id'] = Number(id);
+
+  const insets = useSafeAreaInsets();
 
   const {
     data: movie,
@@ -70,260 +67,136 @@ const MovieDetails = () => {
     );
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
+    <ScrollView
+      className="flex-1 bg-secondary "
+      contentContainerStyle={{
+        paddingTop: 40,
+        paddingBottom: insets.bottom + 32,
+      }}
+    >
+      <View className="mx-4 flex-row rounded-xl bg-ratingBox">
         <Image
           source={{
             uri: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
           }}
-          style={styles.poster}
+          className="aspect-[3/4] w-[45%] rounded-md md:w-40"
         />
-        <View style={styles.headerInfo}>
-          <Text style={styles.title}>{movie.title}</Text>
-          <Text style={styles.originalTitle}>
-            {movie.original_title && movie.original_title !== movie.title && (
-              <Text>Оригінальна назва: {movie.original_title}</Text>
-            )}
+        <View className="ml-4 flex-1 justify-between">
+          <Text className="my-1 text-xl font-bold text-secondaryText">
+            {movie.title}
           </Text>
-          <View style={styles.metaRow}>
-            <Text style={styles.metaText}>
+
+          {movie.original_title && movie.original_title !== movie.title && (
+            <Text className="mb-2 text-base text-accentText">
+              Оригінальна назва: {movie.original_title}
+            </Text>
+          )}
+
+          <View className="flex-row items-center">
+            <Text className="mb-2 text-sm text-accentText">
               {formatReleaseDate(movie.release_date)}
             </Text>
             {movie.runtime && (
-              <Text style={styles.metaText}>
+              <Text className="mb-2 text-sm text-accentText">
                 | {formatRuntime(movie.runtime)}
               </Text>
             )}
           </View>
-          <View style={styles.ratingRow}>
-            <Text style={styles.rating}>
+          <View className="mb-2 flex-row items-center">
+            <Text className="mr-2 text-xl font-bold text-white">
               {formatVoteAverage(movie.vote_average)}
             </Text>
-            <Text style={styles.votes}>({movie.vote_count} голосів)</Text>
+            <Text className="text-sm text-accentText">
+              ({movie.vote_count} голосів)
+            </Text>
           </View>
+
           {movie.genres && (
-            <Text style={styles.genres}>{formatGenres(movie.genres)}</Text>
+            <Text className="mb-2 text-base text-white">
+              {formatGenres(movie.genres)}
+            </Text>
           )}
         </View>
       </View>
 
-      {movie.tagline && <Text style={styles.tagline}>«{movie.tagline}»</Text>}
+      {movie.tagline && (
+        <Text className="mb-4 px-4 text-center text-lg italic text-white">
+          «{movie.tagline}»
+        </Text>
+      )}
 
-      <Text style={styles.overviewLabel}>Опис</Text>
-      <Text style={styles.overview}>{movie.overview}</Text>
+      <Text className="mb-2 px-4 text-xl font-bold text-white">Опис</Text>
+      <Text className="mb-6 px-4 text-base leading-6 text-accentText">
+        {movie.overview}
+      </Text>
 
-      <View style={styles.detailsSection}>
-        <Text style={styles.sectionTitle}>Деталі</Text>
+      <View className="mb-6 px-4">
+        <Text className="mb-4 text-xl font-bold text-white">Деталі</Text>
 
         {movie.budget !== undefined && (
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Бюджет:</Text>
-            <Text style={styles.detailValue}>
-              {movie.budget > 0
-                ? `${movie.budget.toLocaleString('uk-UA')} ₽`
-                : 'Невідомо'}
-            </Text>
-          </View>
+          <DetailsRow
+            label="Бюджет:"
+            value={
+              movie.budget > 0
+                ? `${movie.budget.toLocaleString('uk-UA')} $`
+                : 'Невідомо'
+            }
+          />
         )}
 
         {movie.revenue !== undefined && (
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Прибуток:</Text>
-            <Text style={styles.detailValue}>
-              {movie.revenue > 0
-                ? `${movie.revenue.toLocaleString('uk-UA')} ₽`
-                : 'Невідомо'}
-            </Text>
-          </View>
+          <DetailsRow
+            label="Прибуток:"
+            value={
+              movie.revenue > 0
+                ? `${movie.revenue.toLocaleString('uk-UA')} $`
+                : 'Невідомо'
+            }
+          />
         )}
 
-        {movie.status && (
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Статус:</Text>
-            <Text style={styles.detailValue}>{movie.status}</Text>
-          </View>
+        {movie.status && <DetailsRow label="Статус:" value={movie.status} />}
+
+        {!!movie.production_companies?.length && (
+          <DetailsRow
+            label="Студія:"
+            value={movie.production_companies
+              .map((c: { name: string }) => c.name)
+              .join(', ')}
+          />
         )}
 
-        {movie.production_companies &&
-          movie.production_companies.length > 0 && (
-            <View style={styles.detailRow}>
-              <Text style={styles.detailLabel}>Студія:</Text>
-              <Text style={styles.detailValue}>
-                {movie.production_companies.map(comp => comp.name).join(', ')}
-              </Text>
-            </View>
-          )}
-
-        {movie.spoken_languages && movie.spoken_languages.length > 0 && (
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Мови:</Text>
-            <Text style={styles.detailValue}>
-              {movie.spoken_languages.map(lang => lang.name).join(', ')}
-            </Text>
-          </View>
+        {!!movie.spoken_languages?.length && (
+          <DetailsRow
+            label="Мови:"
+            value={movie.spoken_languages
+              .map((l: { name: string }) => l.name)
+              .join(', ')}
+          />
         )}
       </View>
 
-      <View style={styles.buttonsSection}>
-        <TouchableOpacity
-          style={[styles.button, styles.secondaryButton]}
+      <View className="mb-6 flex-row px-4">
+        <ActionButton
+          title="Перейти на IMDb"
+          disabledTitle="IMDb недоступно"
           onPress={openIMDB}
-          disabled={!movie.imdb_id}
-        >
-          <Text style={[styles.buttonText, styles.secondaryButtonText]}>
-            {movie.imdb_id ? 'Перейти на IMDb' : 'IMDb недоступно'}
-          </Text>
-        </TouchableOpacity>
+          enabled={!!movie.imdb_id}
+          variant="secondary"
+        />
 
-        <TouchableOpacity
-          style={[styles.button, styles.primaryButton]}
+        <View className="w-4" />
+
+        <ActionButton
+          title="Відкрити сайт"
+          disabledTitle="Сайт недоступний"
           onPress={openHomepage}
-          disabled={!movie.homepage}
-        >
-          <Text style={[styles.buttonText, styles.primaryButtonText]}>
-            {movie.homepage ? 'Відкрити сайт' : 'Сайт недоступний'}
-          </Text>
-        </TouchableOpacity>
+          enabled={!!movie.homepage}
+          variant="primary"
+        />
       </View>
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#000',
-  },
-  header: {
-    flexDirection: 'row',
-    padding: 16,
-    backgroundColor: '#1a1a1a',
-  },
-  poster: {
-    width: 120,
-    height: 180,
-    borderRadius: 8,
-    resizeMode: 'cover',
-  },
-  headerInfo: {
-    flex: 1,
-    marginLeft: 16,
-    justifyContent: 'space-between',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 4,
-  },
-  originalTitle: {
-    fontSize: 16,
-    color: '#888',
-    marginBottom: 8,
-  },
-  metaRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  metaText: {
-    fontSize: 14,
-    color: '#888',
-    marginRight: 8,
-  },
-  ratingRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  rating: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginRight: 8,
-  },
-  votes: {
-    fontSize: 14,
-    color: '#888',
-  },
-  genres: {
-    fontSize: 16,
-    color: '#fff',
-    marginBottom: 8,
-  },
-  tagline: {
-    fontSize: 18,
-    fontStyle: 'italic',
-    color: '#fff',
-    paddingHorizontal: 16,
-    marginBottom: 16,
-    textAlign: 'center',
-  },
-  overviewLabel: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#fff',
-    paddingHorizontal: 16,
-    marginBottom: 8,
-  },
-  overview: {
-    fontSize: 16,
-    color: '#888',
-    paddingHorizontal: 16,
-    marginBottom: 24,
-    lineHeight: 24,
-  },
-  detailsSection: {
-    paddingHorizontal: 16,
-    marginBottom: 24,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 16,
-  },
-  detailRow: {
-    flexDirection: 'row',
-    marginBottom: 12,
-  },
-  detailLabel: {
-    fontSize: 16,
-    color: '#888',
-    width: 100,
-    fontWeight: '600',
-  },
-  detailValue: {
-    fontSize: 16,
-    color: '#fff',
-    flex: 1,
-  },
-  buttonsSection: {
-    flexDirection: 'row',
-    paddingHorizontal: 16,
-    marginBottom: 24,
-  },
-  button: {
-    flex: 1,
-    padding: 12,
-    borderRadius: 8,
-    marginHorizontal: 8,
-  },
-  primaryButton: {
-    backgroundColor: '#e50914',
-  },
-  secondaryButton: {
-    backgroundColor: '#333',
-  },
-  buttonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    textAlign: 'center',
-    color: '#fff',
-  },
-  primaryButtonText: {},
-  secondaryButtonText: {
-    color: '#888',
-  },
-});
 
 export default MovieDetails;
