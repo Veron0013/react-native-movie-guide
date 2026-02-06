@@ -1,11 +1,36 @@
+import { DarkTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import './globals.css';
 
+const NAV_THEME = {
+  ...DarkTheme,
+  colors: {
+    ...DarkTheme.colors,
+    background: '#030014',
+    card: '#030014',
+  },
+};
+
 export default function RootLayout() {
   return (
-    <Stack>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="movie/[id]" options={{ headerShown: false }} />
-    </Stack>
+    <ThemeProvider value={NAV_THEME}>
+      <Stack
+        screenOptions={{
+          contentStyle: { backgroundColor: '#030014' },
+        }}
+      >
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="movie/[id]"
+          options={{
+            headerShown: false,
+            gestureEnabled: true,
+            // можеш залишити як хочеш, але “білий” це не від animation
+            presentation: 'modal',
+            animation: 'slide_from_left',
+          }}
+        />
+      </Stack>
+    </ThemeProvider>
   );
 }

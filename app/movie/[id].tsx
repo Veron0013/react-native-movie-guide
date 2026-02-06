@@ -26,7 +26,7 @@ const MovieDetails = () => {
     const date = new Date(dateString);
     return date.toLocaleDateString('uk-UA', {
       year: 'numeric',
-      month: 'long',
+      month: 'numeric',
       day: 'numeric',
     });
   };

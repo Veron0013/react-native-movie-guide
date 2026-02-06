@@ -21,7 +21,7 @@ const TabIcon = ({ focused, text, icon }: tabIconProps) => {
   return focused ? (
     <ImageBackground
       source={images.highlight}
-      className="flex flex-row w-full flex-1 min-w-[112px] min-h-16 justify-center items-center rounded-full overflow-hidden"
+      className="flex min-h-16 w-full min-w-[112px] flex-1 flex-row items-center justify-center overflow-hidden rounded-full"
     >
       <Image source={icon} tintColor={colors.secondary} className="size-6" />
       <Text className="ml-2 text-base font-semibold text-secondary">
@@ -29,7 +29,7 @@ const TabIcon = ({ focused, text, icon }: tabIconProps) => {
       </Text>
     </ImageBackground>
   ) : (
-    <View className="justify-center items-center rounded-full size-full">
+    <View className="size-full items-center justify-center rounded-full">
       <Image source={icon} tintColor={colors.accentText} className="size-6" />
     </View>
   );
@@ -40,6 +40,7 @@ const TabsLayout = () => {
     <Tabs
       screenOptions={{
         tabBarShowLabel: false,
+        sceneStyle: { backgroundColor: '#030014' },
         tabBarIconStyle: {
           justifyContent: 'center',
           alignItems: 'center',
@@ -90,7 +91,7 @@ const TabsLayout = () => {
           headerShown: false,
           tabBarIcon: ({ focused }) => (
             <TabIcon focused={focused} text="Saved" icon={icons.save} />
-          ), 
+          ),
         }}
       />
       <Tabs.Screen
