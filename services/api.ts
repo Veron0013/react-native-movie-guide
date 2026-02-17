@@ -33,11 +33,11 @@ export const fetchMovies = async ({ query }: fetchMoviesProps) => {
   return data.results;
 };
 
-interface fetchOneMovie {
+interface fetchOneMovieProp {
   movie_id: Movie['id'];
 }
 
-export const fetchOneMovie = async ({ movie_id }: fetchOneMovie) => {
+export const fetchOneMovie = async ({ movie_id }: fetchOneMovieProp) => {
   const endpoint = `${TMDB_CONFIG.BASE_URL}/movie/${movie_id}`;
 
   const response = await fetch(endpoint, {
