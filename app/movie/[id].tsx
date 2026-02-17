@@ -74,14 +74,14 @@ const MovieDetails = () => {
         paddingBottom: insets.bottom + 32,
       }}
     >
-      <View className="mx-4 flex-row rounded-xl bg-ratingBox">
+      <View className="flex-row mx-4 rounded-xl bg-ratingBox">
         <Image
           source={{
             uri: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
           }}
           className="aspect-[3/4] w-[45%] rounded-md md:w-40"
         />
-        <View className="ml-4 flex-1 justify-between">
+        <View className="justify-between flex-1 ml-4">
           <Text className="my-1 text-xl font-bold text-secondaryText">
             {movie.title}
           </Text>
@@ -98,11 +98,11 @@ const MovieDetails = () => {
             </Text>
             {movie.runtime && (
               <Text className="mb-2 text-sm text-accentText">
-                | {formatRuntime(movie.runtime)}
+                {` | ${formatRuntime(movie.runtime)}`}
               </Text>
             )}
           </View>
-          <View className="mb-2 flex-row items-center">
+          <View className="flex-row items-center mb-2">
             <Text className="mr-2 text-xl font-bold text-white">
               {formatVoteAverage(movie.vote_average)}
             </Text>
@@ -120,17 +120,17 @@ const MovieDetails = () => {
       </View>
 
       {movie.tagline && (
-        <Text className="mb-4 px-4 text-center text-lg italic text-white">
+        <Text className="px-4 mb-4 text-lg italic text-center text-white">
           «{movie.tagline}»
         </Text>
       )}
 
-      <Text className="mb-2 px-4 text-xl font-bold text-white">Опис</Text>
-      <Text className="mb-6 px-4 text-base leading-6 text-accentText">
+      <Text className="px-4 mb-2 text-xl font-bold text-white">Опис</Text>
+      <Text className="px-4 mb-6 text-base leading-6 text-accentText">
         {movie.overview}
       </Text>
 
-      <View className="mb-6 px-4">
+      <View className="px-4 mb-6">
         <Text className="mb-4 text-xl font-bold text-white">Деталі</Text>
 
         {movie.budget !== undefined && (
@@ -176,7 +176,7 @@ const MovieDetails = () => {
         )}
       </View>
 
-      <View className="mb-6 flex-row px-4">
+      <View className="flex-row px-4 mb-6">
         <ActionButton
           title="Перейти на IMDb"
           disabledTitle="IMDb недоступно"

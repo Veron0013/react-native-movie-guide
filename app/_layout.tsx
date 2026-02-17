@@ -25,7 +25,6 @@ export default function RootLayout() {
           options={{
             headerShown: false,
             gestureEnabled: true,
-            // можеш залишити як хочеш, але “білий” це не від animation
             presentation: 'modal',
             animation: 'slide_from_left',
           }}

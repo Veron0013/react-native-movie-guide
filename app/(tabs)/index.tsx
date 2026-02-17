@@ -15,7 +15,7 @@ export default function Index() {
     data: movies,
     loading: moviesLoading,
     error: moviesError,
-  } = useFetch(() => fetchMovies({ query: '' }));
+  } = useFetch(() => fetchMovies({ query: 'iron man' }));
 
   return (
     <View className="flex-1 bg-primary">
@@ -30,7 +30,7 @@ export default function Index() {
           <>
             <Image
               source={icons.logo}
-              className="mx-auto mb-5 mt-20 h-10 w-12"
+              className="w-12 h-10 mx-auto mt-20 mb-5"
             />
 
             <SearchBar
@@ -38,7 +38,7 @@ export default function Index() {
               placeholder="Search or a movie"
             />
 
-            <Text className="mb-3 mt-5 self-center text-xl font-bold text-white">
+            <Text className="self-center mt-5 mb-3 text-xl font-bold text-white">
               Latest movies
             </Text>
           </>
